@@ -57,7 +57,7 @@ public class Eliminar_Usuario extends JFrame {
 
 
     public Connection Conexion() throws SQLException {
-        String url = "jdbc:mysql://127.0.0.1:3306/proyecto";
+        String url = "jdbc:mysql://127.0.0.1:3306/proyectoFinal";
         String user = "root";
         String password = "vamossobreruedasdefuegoAa@_";
 

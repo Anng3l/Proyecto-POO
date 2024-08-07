@@ -110,7 +110,7 @@ public class Login extends JFrame {
 
 
     public Connection conexion() throws SQLException {
-        String url = "jdbc:mysql://127.0.0.1:3306/proyecto";
+        String url = "jdbc:mysql://127.0.0.1:3306/proyectofinal";
         String user = "root";
         String password = "vamossobreruedasdefuegoAa@_";
         /*
