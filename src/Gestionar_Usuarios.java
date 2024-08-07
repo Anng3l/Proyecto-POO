@@ -77,6 +77,14 @@ public class Gestionar_Usuarios extends JFrame {
                 eliminarUsuario.setVisible(true);
             }
         });
+
+        crearUsuarioButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Crear_Usuario crearUsuario = new Crear_Usuario();
+                crearUsuario.setVisible(true);
+            }
+        });
     }
 
     private void CreatePanelOptions(String nombre, String orden) throws SQLException {

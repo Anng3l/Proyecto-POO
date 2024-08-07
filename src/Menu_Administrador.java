@@ -54,7 +54,12 @@ public class Menu_Administrador extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
-                Gestionar_Libros gestionarLibros = new Gestionar_Libros();
+                Gestionar_Libros gestionarLibros = null;
+                try {
+                    gestionarLibros = new Gestionar_Libros();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
                 gestionarLibros.setVisible(true);
             }
         });
