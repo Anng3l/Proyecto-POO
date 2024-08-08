@@ -2,10 +2,15 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.*;
-import java.util.Date;
 
+/**
+ * La clase Gestionar_Libros proporciona una interfaz gráfica para gestionar libros en una base de datos.
+ */
 public class Gestionar_Libros extends JFrame {
     private JTextField autorTextField;
     private JTextField tituloTextField;
@@ -20,13 +25,18 @@ public class Gestionar_Libros extends JFrame {
     private JPanel Panel;
     private JComboBox<String> ordenComboBox;
 
+    /**
+     * Constructor de la clase Gestionar_Libros.
+     * Inicializa los componentes de la interfaz gráfica y establece los manejadores de eventos.
+     *
+     * @throws SQLException Si ocurre un error al establecer la conexión con la base de datos.
+     */
     public Gestionar_Libros() throws SQLException {
         super("Gestión de Libros");
         setContentPane(Panel);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(800, 800);
 
-        // Inicializar el JComboBox con las opciones de ordenamiento
         ordenComboBox.setModel(new DefaultComboBoxModel<>(new String[]{
                 "Mayor a menor (id)",
                 "Menor a mayor (id)",
@@ -106,6 +116,15 @@ public class Gestionar_Libros extends JFrame {
         });
     }
 
+    /**
+     * Crea y actualiza el panel de opciones con los resultados de búsqueda.
+     *
+     * @param id     El ID del libro.
+     * @param titulo El título del libro.
+     * @param autor  El autor del libro.
+     * @param orden  El criterio de ordenamiento.
+     * @throws SQLException Si ocurre un error al ejecutar la consulta SQL.
+     */
     private void CreatePanelOptions(String id, String titulo, String autor, String orden) throws SQLException {
         Connection connection = Conexion();
 
@@ -145,6 +164,13 @@ public class Gestionar_Libros extends JFrame {
         ExecuteSQL(prst, connection);
     }
 
+    /**
+     * Ejecuta la consulta SQL y actualiza la tabla de libros con los resultados.
+     *
+     * @param prst       La sentencia SQL preparada.
+     * @param connection La conexión a la base de datos.
+     * @throws SQLException Si ocurre un error al ejecutar la consulta SQL.
+     */
     public void ExecuteSQL(PreparedStatement prst, Connection connection) throws SQLException {
         ResultSet rs = prst.executeQuery();
 
@@ -172,6 +198,11 @@ public class Gestionar_Libros extends JFrame {
         connection.close();
     }
 
+    /**
+     * Descarga el archivo asociado al libro seleccionado en la tabla.
+     *
+     * @throws SQLException Si ocurre un error al ejecutar la consulta SQL.
+     */
     private void downloadFile() throws SQLException {
         int selectedRow = librosTable.getSelectedRow();
         if (selectedRow == -1) {
@@ -212,7 +243,7 @@ public class Gestionar_Libros extends JFrame {
                 outputStream.write(buffer, 0, bytesRead);
             }
             JOptionPane.showMessageDialog(this, "Archivo descargado exitosamente.");
-            registerDownload(id); // Registrar la descarga en la base de datos
+            registerDownload(id);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Error al guardar el archivo.");
             e.printStackTrace();
@@ -223,13 +254,18 @@ public class Gestionar_Libros extends JFrame {
         }
     }
 
+    /**
+     * Registra la descarga del libro en la base de datos.
+     *
+     * @param bookId El ID del libro descargado.
+     * @throws SQLException Si ocurre un error al registrar la descarga.
+     */
     private void registerDownload(int bookId) throws SQLException {
         Integer userId = getCurrentUserId(); // Cambiado para obtener el ID de usuario correctamente
         System.out.println("ID de usuario actual: " + userId);
 
         Connection connection = Conexion();
         try {
-            // Verifica que el usuario exista en la tabla usuarios
             String checkUserSql = "SELECT COUNT(*) FROM usuarios WHERE id_usuario = ?";
             PreparedStatement checkUserStmt = connection.prepareStatement(checkUserSql);
             checkUserStmt.setInt(1, userId);
@@ -240,7 +276,6 @@ public class Gestionar_Libros extends JFrame {
             rsUser.close();
             checkUserStmt.close();
 
-            // Verifica que el libro exista en la tabla libros
             String checkBookSql = "SELECT COUNT(*) FROM libros WHERE id_libro = ?";
             PreparedStatement checkBookStmt = connection.prepareStatement(checkBookSql);
             checkBookStmt.setInt(1, bookId);
@@ -251,12 +286,11 @@ public class Gestionar_Libros extends JFrame {
             rsBook.close();
             checkBookStmt.close();
 
-            // Inserta la descarga en la tabla descargas
             String sql = "INSERT INTO descargas (fk_id_usuario, fk_id_libro, fecha_descarga) VALUES (?, ?, ?)";
             PreparedStatement prst = connection.prepareStatement(sql);
-            prst.setInt(1, userId); // Usa id_usuario como clave foránea
+            prst.setInt(1, userId);
             prst.setInt(2, bookId);
-            prst.setTimestamp(3, new Timestamp(System.currentTimeMillis())); // Usa Timestamp para la fecha actual
+            prst.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
 
             prst.executeUpdate();
             prst.close();
@@ -268,14 +302,21 @@ public class Gestionar_Libros extends JFrame {
         }
     }
 
+    /**
+     * Obtiene el ID del usuario actual desde la sesión o la fuente correspondiente.
+     *
+     * @return El ID del usuario actual.
+     */
     private Integer getCurrentUserId() {
-        // Aquí deberías obtener el ID del usuario actual desde la sesión o la fuente correspondiente.
-        // Asegúrate de que esta función devuelve un Integer.
-        // Ejemplo: return Integer.valueOf(SessionManager.getCurrentUserId());
-        // Asegúrate de que SessionManager.getCurrentUserId() devuelve un valor de tipo Integer.
-        return Integer.valueOf(SessionManager.getCurrentUserId()); // Ajustar según tu implementación
+        return Integer.valueOf(SessionManager.getCurrentUserId());
     }
 
+    /**
+     * Establece una conexión con la base de datos.
+     *
+     * @return La conexión con la base de datos.
+     * @throws SQLException Si ocurre un error al establecer la conexión.
+     */
     public Connection Conexion() throws SQLException {
         String url = "jdbc:mysql://u4zbafnoplzh3tko:DVSH9VULhHuUDlV4G322@" +
                 "bf6cezx2kmkamarpt4ii-mysql.services.clever-cloud.com:3306/bf6cezx2kmkamarpt4ii";

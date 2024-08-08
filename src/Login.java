@@ -1,18 +1,24 @@
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
 
+/**
+ * La clase Login proporciona una interfaz gráfica para la autenticación de usuarios.
+ * Permite a los usuarios iniciar sesión en el sistema, salir de la aplicación o registrarse.
+ */
 public class Login extends JFrame {
-    private JComboBox modoComboBox;
+    private JComboBox<String> modoComboBox;
     private JTextField cedulaTextField;
     private JPasswordField passwordField;
     private JButton iniciarSesionButton;
     private JButton salirButton;
-    private JButton registrarseButton;
     private JPanel Panel;
 
+    /**
+     * Constructor de la clase Login.
+     * Inicializa los componentes de la interfaz gráfica y establece los manejadores de eventos.
+     */
     public Login() {
         super("Login");
         setContentPane(Panel);
@@ -35,10 +41,9 @@ public class Login extends JFrame {
                     throw new RuntimeException(ex);
                 }
 
-                if (x == true && modo.equals("administrador")) {
+                if (x && modo.equals("administrador")) {
                     dispose();
                     JOptionPane.showMessageDialog(null, "Credenciales correctas.");
-                    // Establecer el ID del usuario actual en SessionManager
                     int userId = 0;
                     try {
                         userId = getUserIdByCi(ci);
@@ -48,10 +53,9 @@ public class Login extends JFrame {
                     SessionManager.setCurrentUserId(userId);
                     Menu_Administrador menuAdministrador = new Menu_Administrador();
                     menuAdministrador.setVisible(true);
-                } else if (x == true && modo.equals("usuario")) {
+                } else if (x && modo.equals("usuario")) {
                     dispose();
                     JOptionPane.showMessageDialog(null, "Credenciales correctas.");
-                    // Establecer el ID del usuario actual en SessionManager
                     int userId = 0;
                     try {
                         userId = getUserIdByCi(ci);
@@ -73,15 +77,17 @@ public class Login extends JFrame {
                 System.exit(0);
             }
         });
-
-        registrarseButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Lógica para registrarse
-            }
-        });
     }
 
+    /**
+     * Verifica las credenciales del usuario en la base de datos.
+     *
+     * @param cedula La cédula del usuario.
+     * @param password La contraseña del usuario.
+     * @param modo El modo de usuario (administrador o usuario).
+     * @return true si las credenciales son correctas, false en caso contrario.
+     * @throws SQLException Si ocurre un error al consultar la base de datos.
+     */
     public boolean login(String cedula, String password, String modo) throws SQLException {
         boolean resultado;
         Connection connection = conexion();
@@ -116,6 +122,13 @@ public class Login extends JFrame {
         return resultado;
     }
 
+    /**
+     * Obtiene el ID de usuario basado en la cédula.
+     *
+     * @param ci La cédula del usuario.
+     * @return El ID del usuario.
+     * @throws SQLException Si ocurre un error al consultar la base de datos.
+     */
     public int getUserIdByCi(String ci) throws SQLException {
         int userId = -1;
         Connection connection = conexion();
@@ -135,6 +148,12 @@ public class Login extends JFrame {
         return userId;
     }
 
+    /**
+     * Establece una conexión con la base de datos.
+     *
+     * @return La conexión con la base de datos.
+     * @throws SQLException Si ocurre un error al establecer la conexión.
+     */
     public Connection conexion() throws SQLException {
         String url = "jdbc:mysql://u4zbafnoplzh3tko:DVSH9VULhHuUDlV4G322@" +
                 "bf6cezx2kmkamarpt4ii-mysql.services.clever-cloud.com:3306/bf6cezx2kmkamarpt4ii";

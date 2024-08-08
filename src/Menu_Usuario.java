@@ -1,6 +1,5 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -8,7 +7,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
+import java.util.Objects;
 
+/**
+ * La clase Menu_Usuario proporciona la interfaz gráfica del menú para el usuario,
+ * permitiendo buscar libros, descargar archivos y cerrar sesión.
+ */
 public class Menu_Usuario extends JFrame {
     private JTextField autorTextField;
     private JTextField tituloTextField;
@@ -20,6 +24,10 @@ public class Menu_Usuario extends JFrame {
     private JButton volverButton;
     private JPanel Panel;
 
+    /**
+     * Constructor de la clase Menu_Usuario.
+     * Inicializa los componentes de la interfaz gráfica y establece los manejadores de eventos.
+     */
     public Menu_Usuario() {
         super("Menú de Usuario");
         setContentPane(Panel);
@@ -74,6 +82,16 @@ public class Menu_Usuario extends JFrame {
         });
     }
 
+    /**
+     * Crea y actualiza la tabla de libros con los resultados de la búsqueda
+     * basándose en los parámetros proporcionados.
+     *
+     * @param id      El ID del libro para buscar (puede estar vacío).
+     * @param titulo  El título del libro para buscar (puede estar vacío).
+     * @param autor   El autor del libro para buscar (puede estar vacío).
+     * @param orden   El criterio de ordenación de los resultados.
+     * @throws SQLException Si ocurre un error al ejecutar la consulta SQL.
+     */
     private void CreatePanelOptions(String id, String titulo, String autor, String orden) throws SQLException {
         Connection connection = Conexion();
 
@@ -111,6 +129,13 @@ public class Menu_Usuario extends JFrame {
         ExecuteSQL(prst, connection);
     }
 
+    /**
+     * Ejecuta la consulta SQL proporcionada y actualiza la tabla con los resultados.
+     *
+     * @param prst       El PreparedStatement que contiene la consulta SQL.
+     * @param connection La conexión a la base de datos.
+     * @throws SQLException Si ocurre un error al ejecutar la consulta o al procesar los resultados.
+     */
     public void ExecuteSQL(PreparedStatement prst, Connection connection) throws SQLException {
         ResultSet rs = prst.executeQuery();
 
@@ -138,6 +163,11 @@ public class Menu_Usuario extends JFrame {
         connection.close();
     }
 
+    /**
+     * Descarga el archivo del libro seleccionado en la tabla.
+     *
+     * @throws SQLException Si ocurre un error al descargar el archivo o al registrar la descarga.
+     */
     private void downloadFile() throws SQLException {
         int selectedRow = librosTable.getSelectedRow();
         if (selectedRow == -1) {
@@ -189,6 +219,12 @@ public class Menu_Usuario extends JFrame {
         }
     }
 
+    /**
+     * Registra la descarga del libro en la base de datos.
+     *
+     * @param bookId El ID del libro descargado.
+     * @throws SQLException Si ocurre un error al registrar la descarga.
+     */
     private void registerDownload(int bookId) throws SQLException {
         Integer userId = getCurrentUserId();
         System.out.println("ID de usuario actual: " + userId);
@@ -219,7 +255,7 @@ public class Menu_Usuario extends JFrame {
             PreparedStatement prst = connection.prepareStatement(sql);
             prst.setInt(1, userId);
             prst.setInt(2, bookId);
-            prst.setTimestamp(3, new Timestamp(System.currentTimeMillis())); // Usa Timestamp para la fecha actual
+            prst.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
 
             prst.executeUpdate();
             prst.close();
@@ -231,11 +267,21 @@ public class Menu_Usuario extends JFrame {
         }
     }
 
+    /**
+     * Obtiene el ID del usuario actualmente en sesión.
+     *
+     * @return El ID del usuario actual.
+     */
     private Integer getCurrentUserId() {
-
         return Integer.valueOf(SessionManager.getCurrentUserId());
     }
 
+    /**
+     * Establece la conexión con la base de datos.
+     *
+     * @return La conexión a la base de datos.
+     * @throws SQLException Si ocurre un error al establecer la conexión.
+     */
     public Connection Conexion() throws SQLException {
         String url = "jdbc:mysql://u4zbafnoplzh3tko:DVSH9VULhHuUDlV4G322@" +
                 "bf6cezx2kmkamarpt4ii-mysql.services.clever-cloud.com:3306/bf6cezx2kmkamarpt4ii";

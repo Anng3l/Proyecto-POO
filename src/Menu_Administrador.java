@@ -1,10 +1,13 @@
-import com.mysql.cj.log.Log;
-
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 
+/**
+ * La clase Menu_Administrador proporciona la interfaz gráfica del menú principal para el administrador.
+ * Permite al administrador acceder a las funciones de gestión de usuarios, gestión de libros,
+ * historial de descargas y cerrar sesión.
+ */
 public class Menu_Administrador extends JFrame {
     private JButton gestionarLibrosButton;
     private JButton gestionarUsuariosButton;
@@ -12,6 +15,10 @@ public class Menu_Administrador extends JFrame {
     private JButton cerrarSesionButton;
     private JPanel Panel;
 
+    /**
+     * Constructor de la clase Menu_Administrador.
+     * Inicializa los componentes de la interfaz gráfica y establece los manejadores de eventos.
+     */
     public Menu_Administrador() {
         super("Menú");
         setContentPane(Panel);

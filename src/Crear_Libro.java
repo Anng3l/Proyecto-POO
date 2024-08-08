@@ -4,8 +4,16 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.sql.*;
 
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+/**
+ * La clase Crear_Libro proporciona una interfaz gráfica para crear y almacenar información sobre libros.
+ */
 public class Crear_Libro extends JFrame {
     private JTextField tituloTextField;
     private JTextField anioTextField;
@@ -22,6 +30,10 @@ public class Crear_Libro extends JFrame {
     private File archivoSeleccionado;
     private String extensionArchivo;
 
+    /**
+     * Constructor de la clase Crear_Libro.
+     * Inicializa los componentes de la interfaz gráfica y establece los manejadores de eventos.
+     */
     public Crear_Libro() {
         super("Crear Libro");
         setContentPane(Panel);
@@ -73,9 +85,8 @@ public class Crear_Libro extends JFrame {
                     prst.setString(3, apellidoAutor);
                     prst.setString(4, genero);
                     prst.setString(5, descripcion);
-                    prst.setDate(6, Date.valueOf(anio + "-01-01")); // Convertir año a fecha
+                    prst.setDate(6, Date.valueOf(anio + "-01-01"));
 
-                    // Leer el archivo y establecerlo en el PreparedStatement
                     FileInputStream fis = new FileInputStream(archivoSeleccionado);
                     prst.setBinaryStream(7, fis, (int) archivoSeleccionado.length());
                     prst.setString(8, extensionArchivo);
@@ -103,6 +114,12 @@ public class Crear_Libro extends JFrame {
         });
     }
 
+    /**
+     * Establece una conexión con la base de datos.
+     *
+     * @return La conexión establecida.
+     * @throws SQLException Si ocurre un error al establecer la conexión.
+     */
     public Connection Conexion() throws SQLException {
         String url = "jdbc:mysql://u4zbafnoplzh3tko:DVSH9VULhHuUDlV4G322@" +
                 "bf6cezx2kmkamarpt4ii-mysql.services.clever-cloud.com:3306/bf6cezx2kmkamarpt4ii";

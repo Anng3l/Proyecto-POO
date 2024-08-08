@@ -6,12 +6,19 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+/**
+ * La clase Eliminar_Libro proporciona una interfaz gráfica para eliminar libros de una base de datos.
+ */
 public class Eliminar_Libro extends JFrame {
     private JTextField idTextField;
     private JButton eliminarLibroButton;
     private JButton volverButton;
     private JPanel Panel;
 
+    /**
+     * Constructor de la clase Eliminar_Libro.
+     * Inicializa los componentes de la interfaz gráfica y establece los manejadores de eventos.
+     */
     public Eliminar_Libro() {
         super("Eliminar Libro");
         setContentPane(Panel);
@@ -38,22 +45,23 @@ public class Eliminar_Libro extends JFrame {
         });
     }
 
+    /**
+     * Elimina un libro de la base de datos dado su ID.
+     *
+     * @param id El ID del libro a eliminar.
+     */
     public void EliminarLibro(Integer id) {
         Connection conn = null;
         PreparedStatement stmt = null;
 
         try {
-            // Establecer la conexión a la base de datos
             conn = conexion();
 
-            // Preparar la sentencia SQL para eliminar el libro
             String sql = "DELETE FROM libros WHERE id_libro = ?";
             stmt = conn.prepareStatement(sql);
 
-            // Establecer el parámetro de la sentencia SQL
             stmt.setInt(1, id);
 
-            // Ejecutar la sentencia SQL
             int filasAfectadas = stmt.executeUpdate();
 
             if (filasAfectadas > 0) {
@@ -62,11 +70,9 @@ public class Eliminar_Libro extends JFrame {
                 JOptionPane.showMessageDialog(this, "No se encontró el libro con el ID proporcionado.");
             }
         } catch (SQLException e) {
-            // Manejo de errores
             JOptionPane.showMessageDialog(this, "Error al eliminar el libro: " + e.getMessage());
             e.printStackTrace();
         } finally {
-            // Cerrar recursos
             try {
                 if (stmt != null) stmt.close();
                 if (conn != null) conn.close();
@@ -76,6 +82,12 @@ public class Eliminar_Libro extends JFrame {
         }
     }
 
+    /**
+     * Establece una conexión con la base de datos.
+     *
+     * @return La conexión establecida.
+     * @throws SQLException Si ocurre un error al establecer la conexión.
+     */
     public Connection conexion() throws SQLException {
         String url = "jdbc:mysql://u4zbafnoplzh3tko:DVSH9VULhHuUDlV4G322@" +
                 "bf6cezx2kmkamarpt4ii-mysql.services.clever-cloud.com:3306/bf6cezx2kmkamarpt4ii";

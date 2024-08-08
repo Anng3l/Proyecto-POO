@@ -4,6 +4,10 @@ import java.awt.event.ActionListener;
 
 import java.sql.*;
 
+/**
+ * La clase Modifica_Libro proporciona una interfaz gráfica para modificar la información de un libro en la base de datos.
+ * Permite al usuario actualizar el título, autor, descripción y fecha de publicación del libro.
+ */
 public class Modifica_Libro extends JFrame {
     private JTextField idTextField;
     private JTextField tituloTextField;
@@ -17,6 +21,10 @@ public class Modifica_Libro extends JFrame {
     private JButton volverButton;
     private JPanel Panel;
 
+    /**
+     * Constructor de la clase Modifica_Libro.
+     * Inicializa los componentes de la interfaz gráfica y establece los manejadores de eventos.
+     */
     public Modifica_Libro() {
         super("Modificar Libro");
         setContentPane(Panel);
@@ -66,11 +74,22 @@ public class Modifica_Libro extends JFrame {
         });
     }
 
+    /**
+     * Actualiza la información de un libro en la base de datos.
+     *
+     * @param id              El ID del libro a actualizar.
+     * @param titulo          El nuevo título del libro.
+     * @param nombreAutor     El nuevo nombre del autor del libro.
+     * @param apellidoAutor   El nuevo apellido del autor del libro.
+     * @param descripcion     La nueva descripción del libro.
+     * @param fechaPublicacion La nueva fecha de publicación del libro.
+     * @throws SQLException Si ocurre un error al actualizar la información en la base de datos.
+     */
     public void actualizarInformacionLibros(String id, String titulo, String nombreAutor, String apellidoAutor, String descripcion, java.sql.Date fechaPublicacion) throws SQLException {
         Connection connection = conexion();
 
+        // Consulta para obtener los valores originales del libro
         String sqlDos = "SELECT titulo_libro, nombre_autor_libro, apellido_autor_libro, descripcion_libro, anio_publicacion FROM libros WHERE id_libro = (?);";
-
         String[] valoresOriginales = new String[5];
         PreparedStatement x = connection.prepareStatement(sqlDos);
         x.setString(1, id);
@@ -87,8 +106,8 @@ public class Modifica_Libro extends JFrame {
         x.close();
         y.close();
 
+        // Actualización de los datos del libro
         String sql = "UPDATE libros SET titulo_libro = (?), nombre_autor_libro = (?), apellido_autor_libro = (?), descripcion_libro = (?), anio_publicacion = (?) WHERE id_libro = (?);";
-
         PreparedStatement prst = connection.prepareStatement(sql);
 
         prst.setString(1, titulo.isBlank() ? valoresOriginales[0] : titulo);
@@ -108,6 +127,12 @@ public class Modifica_Libro extends JFrame {
         connection.close();
     }
 
+    /**
+     * Establece la conexión con la base de datos.
+     *
+     * @return La conexión a la base de datos.
+     * @throws SQLException Si ocurre un error al establecer la conexión.
+     */
     public Connection conexion() throws SQLException {
         String url = "jdbc:mysql://u4zbafnoplzh3tko:DVSH9VULhHuUDlV4G322@" +
                 "bf6cezx2kmkamarpt4ii-mysql.services.clever-cloud.com:3306/bf6cezx2kmkamarpt4ii";

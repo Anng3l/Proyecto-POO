@@ -5,6 +5,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
 
+/**
+ * La clase Libros_usuario proporciona una interfaz gráfica para buscar libros en una biblioteca
+ * basada en el título, autor y género.
+ */
 public class Libros_usuario extends JFrame {
     private JTextField titleField;
     private JComboBox<String> authorComboBox;
@@ -12,13 +16,16 @@ public class Libros_usuario extends JFrame {
     private JTable booksTable;
     private DefaultTableModel tableModel;
 
+    /**
+     * Constructor de la clase Libros_usuario.
+     * Inicializa los componentes de la interfaz gráfica, incluyendo los campos de entrada y la tabla.
+     */
     public Libros_usuario() {
         setTitle("Library Management");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Panel de entrada
         JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new GridLayout(3, 2));
 
@@ -36,12 +43,10 @@ public class Libros_usuario extends JFrame {
 
         add(inputPanel, BorderLayout.NORTH);
 
-        // Botón de búsqueda
         JButton searchButton = new JButton("Search");
         searchButton.addActionListener(new SearchButtonListener());
         add(searchButton, BorderLayout.CENTER);
 
-        // Tabla de libros
         booksTable = new JTable();
         tableModel = new DefaultTableModel(new Object[]{"Title", "Author", "Genre"}, 0);
         booksTable.setModel(tableModel);
@@ -51,6 +56,9 @@ public class Libros_usuario extends JFrame {
         loadGenres();
     }
 
+    /**
+     * Carga los autores disponibles en el JComboBox.
+     */
     private void loadAuthors() {
         try (Connection conn = conexion()) {
             Statement stmt = conn.createStatement();
@@ -63,6 +71,9 @@ public class Libros_usuario extends JFrame {
         }
     }
 
+    /**
+     * Carga los géneros disponibles en el JComboBox.
+     */
     private void loadGenres() {
         try (Connection conn = conexion()) {
             Statement stmt = conn.createStatement();
@@ -75,6 +86,10 @@ public class Libros_usuario extends JFrame {
         }
     }
 
+    /**
+     * Manejador de eventos para el botón de búsqueda.
+     * Realiza la búsqueda de libros en función de los criterios proporcionados.
+     */
     private class SearchButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -82,6 +97,9 @@ public class Libros_usuario extends JFrame {
         }
     }
 
+    /**
+     * Realiza la búsqueda de libros en la base de datos y actualiza la tabla con los resultados.
+     */
     private void searchBooks() {
         String title = titleField.getText();
         String author = (String) authorComboBox.getSelectedItem();
@@ -116,6 +134,12 @@ public class Libros_usuario extends JFrame {
         }
     }
 
+    /**
+     * Establece una conexión con la base de datos.
+     *
+     * @return La conexión con la base de datos.
+     * @throws SQLException Si ocurre un error al establecer la conexión.
+     */
     public Connection conexion() throws SQLException {
         String url = "jdbc:mysql://u4zbafnoplzh3tko:DVSH9VULhHuUDlV4G322@" +
                 "bf6cezx2kmkamarpt4ii-mysql.services.clever-cloud.com:3306/bf6cezx2kmkamarpt4ii";

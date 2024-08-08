@@ -1,22 +1,27 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
 
+/**
+ * La clase Historial_Descargas proporciona una interfaz gráfica para visualizar el historial de descargas de libros.
+ */
 public class Historial_Descargas extends JFrame {
     private JTable visualizarTable;
     private JButton volverButton;
     private JPanel Panel;
 
+    /**
+     * Constructor de la clase Historial_Descargas.
+     * Inicializa los componentes de la interfaz gráfica y establece el manejador de eventos para el botón de volver.
+     */
     public Historial_Descargas() {
         super("Historial de Descargas");
         setContentPane(Panel);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(800, 600);
-
-        // Inicializar la tabla
+        
         visualizarTable.setModel(new DefaultTableModel(
                 new String[]{"ID Usuario", "Nombre Usuario", "Apellido Usuario", "ID Libro", "Título Libro", "Fecha Descarga"}, 0));
 
@@ -32,6 +37,9 @@ public class Historial_Descargas extends JFrame {
         });
     }
 
+    /**
+     * Carga los datos de las descargas en la tabla desde la base de datos.
+     */
     private void cargarDatos() {
         try {
             Connection connection = Conexion();
@@ -65,9 +73,14 @@ public class Historial_Descargas extends JFrame {
         }
     }
 
+    /**
+     * Establece una conexión con la base de datos.
+     *
+     * @return La conexión con la base de datos.
+     * @throws SQLException Si ocurre un error al establecer la conexión.
+     */
     private Connection Conexion() throws SQLException {
-        String url = "jdbc:mysql://u4zbafnoplzh3tko:DVSH9VULhHuUDlV4G322@" +
-                "bf6cezx2kmkamarpt4ii-mysql.services.clever-cloud.com:3306/bf6cezx2kmkamarpt4ii";
+        String url = "jdbc:mysql://u4zbafnoplzh3tko:DVSH9VULhHuUDlV4G322@bf6cezx2kmkamarpt4ii-mysql.services.clever-cloud.com:3306/bf6cezx2kmkamarpt4ii";
         String user = "u4zbafnoplzh3tko";
         String password = "DVSH9VULhHuUDlV4G322";
 
