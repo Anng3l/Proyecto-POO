@@ -178,7 +178,7 @@ public class Menu_Usuario extends JFrame {
                 outputStream.write(buffer, 0, bytesRead);
             }
             JOptionPane.showMessageDialog(this, "Archivo descargado exitosamente.");
-            registerDownload(id); // Registrar la descarga en la base de datos
+            registerDownload(id);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Error al guardar el archivo.");
             e.printStackTrace();
@@ -190,12 +190,11 @@ public class Menu_Usuario extends JFrame {
     }
 
     private void registerDownload(int bookId) throws SQLException {
-        Integer userId = getCurrentUserId(); // Cambiado para obtener el ID de usuario correctamente
+        Integer userId = getCurrentUserId();
         System.out.println("ID de usuario actual: " + userId);
 
         Connection connection = Conexion();
         try {
-            // Verifica que el usuario exista en la tabla usuarios
             String checkUserSql = "SELECT COUNT(*) FROM usuarios WHERE id_usuario = ?";
             PreparedStatement checkUserStmt = connection.prepareStatement(checkUserSql);
             checkUserStmt.setInt(1, userId);
@@ -206,7 +205,6 @@ public class Menu_Usuario extends JFrame {
             rsUser.close();
             checkUserStmt.close();
 
-            // Verifica que el libro exista en la tabla libros
             String checkBookSql = "SELECT COUNT(*) FROM libros WHERE id_libro = ?";
             PreparedStatement checkBookStmt = connection.prepareStatement(checkBookSql);
             checkBookStmt.setInt(1, bookId);
@@ -217,10 +215,9 @@ public class Menu_Usuario extends JFrame {
             rsBook.close();
             checkBookStmt.close();
 
-            // Inserta la descarga en la tabla descargas
             String sql = "INSERT INTO descargas (fk_id_usuario, fk_id_libro, fecha_descarga) VALUES (?, ?, ?)";
             PreparedStatement prst = connection.prepareStatement(sql);
-            prst.setInt(1, userId); // Usa id_usuario como clave foránea
+            prst.setInt(1, userId);
             prst.setInt(2, bookId);
             prst.setTimestamp(3, new Timestamp(System.currentTimeMillis())); // Usa Timestamp para la fecha actual
 
@@ -235,11 +232,8 @@ public class Menu_Usuario extends JFrame {
     }
 
     private Integer getCurrentUserId() {
-        // Aquí deberías obtener el ID del usuario actual desde la sesión o la fuente correspondiente.
-        // Asegúrate de que esta función devuelve un Integer.
-        // Ejemplo: return Integer.valueOf(SessionManager.getCurrentUserId());
-        // Asegúrate de que SessionManager.getCurrentUserId() devuelve un valor de tipo Integer.
-        return Integer.valueOf(SessionManager.getCurrentUserId()); // Ajustar según tu implementación
+
+        return Integer.valueOf(SessionManager.getCurrentUserId());
     }
 
     public Connection Conexion() throws SQLException {
