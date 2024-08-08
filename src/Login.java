@@ -23,10 +23,8 @@ public class Login extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String ci = cedulaTextField.getText();
-
                 char[] pass = passwordField.getPassword();
                 String password = new String(pass);
-
                 String modo = (String) modoComboBox.getSelectedItem();
                 modo = modo.toLowerCase().trim();
 
@@ -37,21 +35,33 @@ public class Login extends JFrame {
                     throw new RuntimeException(ex);
                 }
 
-                if (x == true && modo.equals("administrador"))
-                {
+                if (x == true && modo.equals("administrador")) {
                     dispose();
                     JOptionPane.showMessageDialog(null, "Credenciales correctas.");
+                    // Establecer el ID del usuario actual en SessionManager
+                    int userId = 0;
+                    try {
+                        userId = getUserIdByCi(ci);
+                    } catch (SQLException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    SessionManager.setCurrentUserId(userId);
                     Menu_Administrador menuAdministrador = new Menu_Administrador();
                     menuAdministrador.setVisible(true);
-                }
-                else if (x == true && modo.equals("usuario"))
-                {
+                } else if (x == true && modo.equals("usuario")) {
                     dispose();
                     JOptionPane.showMessageDialog(null, "Credenciales correctas.");
-
-                }
-                else
-                {
+                    // Establecer el ID del usuario actual en SessionManager
+                    int userId = 0;
+                    try {
+                        userId = getUserIdByCi(ci);
+                    } catch (SQLException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    SessionManager.setCurrentUserId(userId);
+                    Menu_Usuario menuUsuario = new Menu_Usuario();
+                    menuUsuario.setVisible(true);
+                } else {
                     JOptionPane.showMessageDialog(null, "Credenciales incorrectas.");
                 }
             }
@@ -67,11 +77,10 @@ public class Login extends JFrame {
         registrarseButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                // Lógica para registrarse
             }
         });
     }
-
 
     public boolean login(String cedula, String password, String modo) throws SQLException {
         boolean resultado;
@@ -84,41 +93,54 @@ public class Login extends JFrame {
 
         ResultSet rs = prst.executeQuery();
 
-
         String ci = "";
         String pass = "";
         String mode = "";
 
-        if (rs.next())
-        {
+        if (rs.next()) {
             ci = rs.getString("ci_usuario");
             pass = rs.getString("password_usuario");
             mode = rs.getString("tipo_usuario");
         }
 
-        if (ci.equals(cedula) && pass.equals(password) && mode.equals(modo))
-        {
+        if (ci.equals(cedula) && pass.equals(password) && mode.equals(modo)) {
             resultado = true;
-        }
-        else
-        {
+        } else {
             resultado = false;
         }
+
+        rs.close();
+        prst.close();
+        connection.close();
 
         return resultado;
     }
 
+    public int getUserIdByCi(String ci) throws SQLException {
+        int userId = -1;
+        Connection connection = conexion();
+        String sql = "SELECT id_usuario FROM usuarios WHERE ci_usuario = ?";
+        PreparedStatement prst = connection.prepareStatement(sql);
+        prst.setString(1, ci);
+
+        ResultSet rs = prst.executeQuery();
+        if (rs.next()) {
+            userId = rs.getInt("id_usuario");
+        }
+
+        rs.close();
+        prst.close();
+        connection.close();
+
+        return userId;
+    }
 
     public Connection conexion() throws SQLException {
-        String url = "jdbc:mysql://127.0.0.1:3306/proyectofinal";
-        String user = "root";
-        String password = "vamossobreruedasdefuegoAa@_";
-        /*
         String url = "jdbc:mysql://u4zbafnoplzh3tko:DVSH9VULhHuUDlV4G322@" +
                 "bf6cezx2kmkamarpt4ii-mysql.services.clever-cloud.com:3306/bf6cezx2kmkamarpt4ii";
         String user = "u4zbafnoplzh3tko";
         String password = "DVSH9VULhHuUDlV4G322";
-         */
+
         return DriverManager.getConnection(url, user, password);
     }
 }

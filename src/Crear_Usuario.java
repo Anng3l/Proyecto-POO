@@ -79,11 +79,11 @@ public class Crear_Usuario extends JFrame {
     }
 
 
-    public Connection Conexion() throws SQLException
-    {
-        String url = "jdbc:mysql://127.0.0.1:3306/proyectoFinal";
-        String user = "root";
-        String password = "vamossobreruedasdefuegoAa@_";
+    public Connection Conexion() throws SQLException {
+        String url = "jdbc:mysql://u4zbafnoplzh3tko:DVSH9VULhHuUDlV4G322@" +
+                "bf6cezx2kmkamarpt4ii-mysql.services.clever-cloud.com:3306/bf6cezx2kmkamarpt4ii";
+        String user = "u4zbafnoplzh3tko";
+        String password = "DVSH9VULhHuUDlV4G322";
 
         return DriverManager.getConnection(url, user, password);
     }

@@ -27,6 +27,4 @@ public class Busqueda_libros extends JFrame {
                 new String[] {"Título", "Autor", "Descripcion", "Año de publicación", "Archivo", "Creación", "Última edición"}
         ));
     }
-
-
 }

@@ -117,15 +117,11 @@ public class Libros_usuario extends JFrame {
     }
 
     public Connection conexion() throws SQLException {
-        String url = "jdbc:mysql://127.0.0.1:3306/proyecto";
-        String user = "root";
-        String password = "vamossobreruedasdefuegoAa@_";
-        /*
         String url = "jdbc:mysql://u4zbafnoplzh3tko:DVSH9VULhHuUDlV4G322@" +
                 "bf6cezx2kmkamarpt4ii-mysql.services.clever-cloud.com:3306/bf6cezx2kmkamarpt4ii";
         String user = "u4zbafnoplzh3tko";
         String password = "DVSH9VULhHuUDlV4G322";
-         */
+
         return DriverManager.getConnection(url, user, password);
     }
 }

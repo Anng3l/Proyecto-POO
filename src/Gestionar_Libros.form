@@ -242,7 +242,6 @@
                 </constraints>
                 <properties>
                   <model>
-                    <item value=""/>
                     <item value="Mayor a menor (id)"/>
                     <item value="Menor a mayor (id)"/>
                     <item value="Alfabeticamente (nombre)"/>
